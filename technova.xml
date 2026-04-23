@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<technova xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="technova.xsd">
+
+    <!-- CATÁLOGO -->
+    <catalogo>
+        <producto id="P001">
+            <nombre>Smartphone XPro</nombre>
+            <categoria>Smartphone</categoria>
+            <precio>699</precio>
+            <stock>15</stock>
+        </producto>
+
+        <producto id="P002">
+            <nombre>NovaBook Laptop</nombre>
+            <categoria>Portátil</categoria>
+            <precio>1099</precio>
+            <stock>8</stock>
+        </producto>
+    </catalogo>
+
+    <!-- CLIENTES -->
+    <clientes>
+        <cliente id="C001">
+            <nombre>Juan Pérez</nombre>
+            <email>juan@email.com</email>
+        </cliente>
+    </clientes>
+
+    <!-- PEDIDOS -->
+    <pedidos>
+        <pedido id="PED001">
+            <cliente_id>C001</cliente_id>
+            <fecha>2026-04-20</fecha>
+
+            <lineas>
+                <linea>
+                    <producto_id>P001</producto_id>
+                    <cantidad>1</cantidad>
+                </linea>
+
+                <linea>
+                    <producto_id>P002</producto_id>
+                    <cantidad>1</cantidad>
+                </linea>
+            </lineas>
+        </pedido>
+    </pedidos>
+
+</technova>
