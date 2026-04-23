@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <!-- ===== TIPOS PERSONALIZADOS ===== -->
+
+    <!-- ID tipo P001, C001 -->
+    <xs:simpleType name="idType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Z][0-9]{3}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Precio positivo -->
+    <xs:simpleType name="precioType">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Email básico -->
+    <xs:simpleType name="emailType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value=".+@.+\..+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- ===== ELEMENTO RAÍZ ===== -->
+
+    <xs:element name="technova">
+        <xs:complexType>
+            <xs:sequence>
+
+                <!-- CATÁLOGO -->
+                <xs:element name="catalogo">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="producto" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="nombre" type="xs:string"/>
+                                        <xs:element name="categoria" type="xs:string"/>
+                                        <xs:element name="precio" type="precioType"/>
+                                        <xs:element name="stock" type="xs:integer"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="id" type="idType" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- CLIENTES -->
+                <xs:element name="clientes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="cliente" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="nombre" type="xs:string"/>
+                                        <xs:element name="email" type="emailType"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="id" type="idType" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- PEDIDOS -->
+                <xs:element name="pedidos">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="pedido" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+
+                                        <xs:element name="cliente_id" type="idType"/>
+                                        <xs:element name="fecha" type="xs:date"/>
+
+                                        <xs:element name="lineas">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="linea" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="producto_id" type="idType"/>
+                                                                <xs:element name="cantidad">
+                                                                    <xs:simpleType>
+                                                                        <xs:restriction base="xs:integer">
+                                                                            <xs:minInclusive value="1"/>
+                                                                        </xs:restriction>
+                                                                    </xs:simpleType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+
+                                    </xs:sequence>
+                                    <xs:attribute name="id" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+            </xs:sequence>
+        </xs:complexType>
+
+        <!-- ===== CLAVES Y REFERENCIAS (NIVEL ALTO) ===== -->
+
+        <!-- IDs únicos de productos -->
+        <xs:key name="productoKey">
+            <xs:selector xpath="catalogo/producto"/>
+            <xs:field xpath="@id"/>
+        </xs:key>
+
+        <!-- IDs únicos de clientes -->
+        <xs:key name="clienteKey">
+            <xs:selector xpath="clientes/cliente"/>
+            <xs:field xpath="@id"/>
+        </xs:key>
+
+        <!-- Referencia cliente en pedidos -->
+        <xs:keyref name="clienteRef" refer="clienteKey">
+            <xs:selector xpath="pedidos/pedido"/>
+            <xs:field xpath="cliente_id"/>
+        </xs:keyref>
+
+        <!-- Referencia producto en líneas -->
+        <xs:keyref name="productoRef" refer="productoKey">
+            <xs:selector xpath="pedidos/pedido/lineas/linea"/>
+            <xs:field xpath="producto_id"/>
+        </xs:keyref>
+
+    </xs:element>
+
+</xs:schema>
